@@ -1,0 +1,17 @@
+{
+  "_slug_prefix": "bulk-upload-series-prefix",
+  "_title_prefix": "Chapter",
+  "user": "1",
+  "post_status": "publish",
+  "excerpt": "",
+  "comment_status": "open",
+  "ping_status": "open",
+  "custom_fields": [],
+  "post_format": "standard",
+  "thumbnail": [],
+  "terms_names": [],
+  "sticky": false,
+  "post_type": "post",
+  "parent_id": "0",
+  "menu_order": 0
+}
