@@ -90,7 +90,9 @@ def main(args=None):
 
         # Set metadata attributes
         for k, v in metadata.items():
-            setattr(post, k, v)
+            # Filter keys that aren't used for XML-RPC.
+            if not k.startswith('_'):
+                setattr(post, k, v)
 
         # Set content from the html file
         # post.content = html

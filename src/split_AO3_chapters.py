@@ -100,7 +100,10 @@ def main(args=None):
         dest = dest
 
         # Metadata -- potentially useful for working with the posts later
-        metadata = {"index": ix + 1, "title": title}
+        metadata = {
+            "_index": ix + 1,
+            "title": title,
+        }
 
         # Whether to create standalone HTML pages or just extract fragments
         if args.fragment:
@@ -122,11 +125,11 @@ def main(args=None):
         if args.metadata:
             meta_dest = dest.with_suffix(".json")
             if not args.dry_run:
-                print(f"saving metadata to: {dest}")
+                print(f"saving metadata to: {meta_dest}")
                 with open(meta_dest, "w") as f:
                     json.dump(metadata, f, indent=2)
             else:
-                print(f"[DRY RUN] saving metadata to: {dest}")
+                print(f"[DRY RUN] saving metadata to: {meta_dest}")
 
 
 if __name__ == "__main__":
