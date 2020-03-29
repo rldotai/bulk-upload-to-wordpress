@@ -46,7 +46,7 @@ def main(args=None):
     parser.add_argument(
         "--metadata",
         action="store_true",
-        help="extract and create accompanying files containing metadata for each chapter."
+        help="extract and create accompanying files containing metadata for each chapter.",
     )
 
     if args is None:
@@ -100,10 +100,7 @@ def main(args=None):
         dest = dest
 
         # Metadata -- potentially useful for working with the posts later
-        metadata = {
-            'index': ix + 1,
-            'title': title,
-        }
+        metadata = {"index": ix + 1, "title": title}
 
         # Whether to create standalone HTML pages or just extract fragments
         if args.fragment:
@@ -123,14 +120,13 @@ def main(args=None):
 
         # Optionally save metadata (such as it is)
         if args.metadata:
-            meta_dest = dest.with_suffix('.json')
+            meta_dest = dest.with_suffix(".json")
             if not args.dry_run:
                 print(f"saving metadata to: {dest}")
                 with open(meta_dest, "w") as f:
                     json.dump(metadata, f, indent=2)
             else:
                 print(f"[DRY RUN] saving metadata to: {dest}")
-
 
 
 if __name__ == "__main__":

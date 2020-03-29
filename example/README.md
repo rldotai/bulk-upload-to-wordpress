@@ -76,7 +76,6 @@ bulk_upload_wordpress ./posts/*.html --url "https://the-singularity-is-nigh.word
 ```
 
 
-
 ## Regarding Metadata
 
 
