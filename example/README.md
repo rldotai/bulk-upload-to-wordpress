@@ -228,5 +228,6 @@ any other fields support
 ```
 
 References:
+
     - https://codex.wordpress.org/XML-RPC_WordPress_API/Posts
     - https://developer.wordpress.org/reference/functions/wp_insert_post/
