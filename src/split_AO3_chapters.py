@@ -100,10 +100,7 @@ def main(args=None):
         dest = dest
 
         # Metadata -- potentially useful for working with the posts later
-        metadata = {
-            "_index": ix + 1,
-            "title": title,
-        }
+        metadata = {"_index": ix + 1, "title": title}
 
         # Whether to create standalone HTML pages or just extract fragments
         if args.fragment:

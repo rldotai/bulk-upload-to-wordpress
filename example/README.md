@@ -48,10 +48,13 @@ posts
 ...although the titles will change depending on the work in question.
 The `.json` files contain metadata for each chapter, which is at present just its index and title.
 
+
 # Uploading Posts
 
-Here I am in a bit of a jam, because I don't actually have a WordPress site that I can test this on.
-I have written a script that _should_ work out of the box, but will likely require modifications to get it working correctly.
+I have written a script that _should_ work out of the box, but will likely require modifications to get it working correctly, particularly if the any of the underlying APIs change.
+*HOWEVER*, since the end result of this process will be a large number of posts made to your site, **please read to the end of this section instead of just copy-pasting the commands**.
+
+---
 
 Assuming everything will work correctly, we then run the `wordpress_upload.py` script, which if the package was installed, is given by `bulk_upload_wordpress`, or you can find the file in `src/wordpress_upload.py`.
 
@@ -63,23 +66,51 @@ bulk_upload_wordpress --help
 bulk_upload_wordpress ./posts/*.html --url "https://my-website/xmlrpc.php" --username="my_username" --password="my_password"
 ```
 
+You need to specify the username, password, and url, otherwise this will obviously not work.
+If your username/password doesn't have upload priviledges, then there'll probably be an authentication error somewhere down the line.
+
+## Metadata
+
 To avoid garbage uploads, or having to manually change things after the upload, we should specify some things about our posts.
+
+Some information is available on a per-post basis, things like the post title, or its chapter index.
+If you generated the posts using the `split_chapters` command, then these metadata files should be in the `./posts` directory, named like the HTML files but with a `.json` suffix.
+This per-post metadata should then be found by the script.
+
 Some aspects of each post are constant (e.g., author, post_status, etc), so we can store them in a single file.
-Here, that's `defaults.json`.
-Our rudimentary per-post metadata should be found by the script.
+Here, that's `defaults.json`, which I have filled out it enough detail to give you an idea of what it ought to look like.
+
+**You should customize this depending on your site!**
+
+In particular, things like `custom_fields`, and `terms_names`, since these set information about the template/layout and categories/post tags, although you can probably set these things as a bulk action in the WP management console, so perhaps it's not essential (and getting this information in the proper form is a little tricky).
+
+## Fix HTML?
+
+WordPress seems to apply additional markup to the uploaded HTML; in particular it inserts line breaks for non-semantic newlines (e.g. those separating `<span>`, `<em>`, and `<b>` tags).
+Simply removing those newlines in the HTML before uploading seems to solve the problem; there's a function that will do this if you use the `--fix-html` flag.
+
+
+## Actually Uploading Posts
 
 So what we actually run would look like:
 
 ```bash
 # An example using metadata, from both defaults and per-post
-bulk_upload_wordpress ./posts/*.html --url "https://the-singularity-is-nigh.wordpress.com/xmlrpc.php" --username "ray" --password "bostromisahack" --use-post-metadata --default-metadata="./defaults.json"
+bulk_upload_wordpress ./posts/*.html \
+--url "https://the-singularity-is-nigh.wordpress.com/xmlrpc.php" \
+--username "ray" \
+--default-metadata="./defaults.json"
+--password "bostromisahack" \
+--use-post-metadata \
+--fix-html
 ```
 
+You can also add in the and `--debug` flag to get a better idea of how the posts have been constructed, and `--dry-run` to run the script without actually uploading anything.
 
 ## Regarding Metadata
 
 
-Posts have a schema of the following form:
+For the Python XML-RPC library, posts have a schema of the following form:
 ```
 {
     'id': 'post_id',
@@ -120,38 +151,8 @@ I am not super certain about the type conversion-- some example code I've read s
 
 # WordPress XML-RPC API Notes
 
-The schema reported by `python-xml-rpc` for a `WordPressPost` object looks like:
-```
-{
-    'id': 'post_id',
-    'user': 'post_author',
-    'date': <wordpress_xmlrpc.fieldmaps.DateTimeFieldMap>,
-    'date_modified': <wordpress_xmlrpc.fieldmaps.DateTimeFieldMap>,
-    'slug': 'post_name',
-    'post_status': 'post_status',
-    'title': <wordpress_xmlrpc.fieldmaps.FieldMap>,
-    'content': 'post_content',
-    'excerpt': 'post_excerpt',
-    'link': 'link',
-    'comment_status': 'comment_status',
-    'ping_status': 'ping_status',
-    'terms': <wordpress_xmlrpc.fieldmaps.TermsListFieldMap>,
-    'terms_names': 'terms_names',
-    'custom_fields': 'custom_fields',
-    'enclosure': 'enclosure',
-    'password': 'post_password',
-    'post_format': 'post_format',
-    'thumbnail': 'post_thumbnail',
-    'sticky': 'sticky',
-    'post_type': <wordpress_xmlrpc.fieldmaps.FieldMap>,
-    'parent_id': 'post_parent',
-    'menu_order': <wordpress_xmlrpc.fieldmaps.IntegerFieldMap>,
-    'guid': 'guid',
-    'mime_type': 'post_mime_type'
-}
-```
 
-Compare with the WordPress docs:
+Compare the Python XML-RPC library's definition with the WordPress docs:
 
 ```
 # https://codex.wordpress.org/XML-RPC_WordPress_API/Posts

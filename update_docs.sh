@@ -7,7 +7,7 @@ make html
 cd ..
 
 # commit and push
-git add -A
+git add -A :/docs
 git commit -m "building and pushing docs"
 git push origin master
 
